@@ -34,3 +34,17 @@ jobs:
 
       - name: Display success message
         run: echo "Basic CI checks completed successfully!"
+
+  semgrep-sast:
+    name: Semgrep SAST Scan
+    runs-on: ubuntu-latest
+
+    container:
+      image: semgrep/semgrep
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Semgrep scan
+        run: semgrep scan --config auto .
