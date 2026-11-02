@@ -1,0 +1,7 @@
+title = "Gitleaks Test Configuration"
+
+[[rules]]
+id = "test-secret"
+description = "Detect dummy test credentials"
+regex = '''DEMO_SECRET_[A-Za-z0-9]{16}'''
+keywords = ["DEMO_SECRET"]
