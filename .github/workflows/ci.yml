@@ -36,9 +36,8 @@ jobs:
         run: echo "Basic CI checks completed successfully!"
 
   semgrep-sast:
-    name: Semgrep SAST Scan
+    name: Semgrep SAST Security Gate
     runs-on: ubuntu-latest
-
     container:
       image: semgrep/semgrep
 
@@ -46,8 +45,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Run Semgrep scan
-        run: semgrep scan --config auto .
+      - name: Run Semgrep security scan
+        run: semgrep scan --config auto --error .
 
   trivy-sca:
     name: Trivy SCA Security Gate
