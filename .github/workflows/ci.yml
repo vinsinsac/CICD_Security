@@ -50,22 +50,22 @@ jobs:
         run: semgrep scan --config auto .
 
   trivy-sca:
-    name: Trivy SCA Scan
+    name: Trivy SCA Security Gate
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Scan dependencies for vulnerabilities
+      - name: Scan dependencies for High and Critical vulnerabilities
         uses: aquasecurity/trivy-action@v0.36.0
         with:
           scan-type: fs
           scan-ref: .
           scanners: vuln
           format: table
-          severity: UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL
-          exit-code: '0'
+          severity: HIGH,CRITICAL
+          exit-code: '1'
 
   zap-dast:
     name: OWASP ZAP DAST Scan
