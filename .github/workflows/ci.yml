@@ -146,3 +146,40 @@ jobs:
           format: table
           severity: HIGH,CRITICAL
           exit-code: '1'
+
+  security-gate:
+    name: Final Security Gate
+    runs-on: ubuntu-latest
+    needs:
+      - semgrep-sast
+      - trivy-sca
+      - zap-dast
+      - gitleaks-secrets
+      - docker-image-scan
+    if: ${{ always() }}
+
+    steps:
+      - name: Verify all security checks
+        env:
+          SEMGREP_RESULT: ${{ needs.semgrep-sast.result }}
+          TRIVY_SCA_RESULT: ${{ needs.trivy-sca.result }}
+          ZAP_RESULT: ${{ needs.zap-dast.result }}
+          GITLEAKS_RESULT: ${{ needs.gitleaks-secrets.result }}
+          DOCKER_RESULT: ${{ needs.docker-image-scan.result }}
+        run: |
+          echo "Semgrep SAST: $SEMGREP_RESULT"
+          echo "Trivy SCA: $TRIVY_SCA_RESULT"
+          echo "OWASP ZAP DAST: $ZAP_RESULT"
+          echo "Gitleaks: $GITLEAKS_RESULT"
+          echo "Docker Image Scan: $DOCKER_RESULT"
+
+          if [[ "$SEMGREP_RESULT" != "success" ||
+                "$TRIVY_SCA_RESULT" != "success" ||
+                "$ZAP_RESULT" != "success" ||
+                "$GITLEAKS_RESULT" != "success" ||
+                "$DOCKER_RESULT" != "success" ]]; then
+            echo "::error::Security gate failed. One or more security checks did not pass."
+            exit 1
+          fi
+
+          echo "All security checks passed!"
