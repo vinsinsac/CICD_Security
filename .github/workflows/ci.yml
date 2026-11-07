@@ -154,6 +154,14 @@ jobs:
             --format cyclonedx \
             --output sbom.cdx.json \
             payment-demo:${{ github.sha }}
+      - name: Upload SBOM artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: payment-demo-sbom
+          path: sbom.cdx.json
+          if-no-files-found: warn
+          retention-days: 30
       - name: Scan SBOM using Trivy
         run: |
           trivy sbom sbom.cdx.json \
