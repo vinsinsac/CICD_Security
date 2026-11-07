@@ -136,7 +136,12 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -t payment-demo:${{ github.sha }} .
-
+      - name: Generate SBOM using Trivy
+        run: |
+          trivy image \
+            --format cyclonedx \
+            --output sbom.cdx.json \
+            payment-demo:${{ github.sha }}
       - name: Scan Docker image using Trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
