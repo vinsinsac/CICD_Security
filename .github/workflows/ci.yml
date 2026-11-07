@@ -177,6 +177,20 @@ jobs:
           severity: HIGH,CRITICAL
           exit-code: '1'
 
+  snyk-sca:
+    name: Snyk SCA Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Run Snyk SCA Scan
+        uses: snyk/actions/python-3.12@master
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+        with:
+          args: --severity-threshold=high
   security-gate:
     name: Final Security Gate
     runs-on: ubuntu-latest
