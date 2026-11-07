@@ -154,6 +154,11 @@ jobs:
             --format cyclonedx \
             --output sbom.cdx.json \
             payment-demo:${{ github.sha }}
+      - name: Scan SBOM using Trivy
+        run: |
+          trivy sbom sbom.cdx.json \
+            --severity HIGH,CRITICAL \
+            --exit-code 1
       - name: Scan Docker image using Trivy
         uses: aquasecurity/trivy-action@v0.36.0
         with:
